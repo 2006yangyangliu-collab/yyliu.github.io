@@ -1,178 +1,326 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>刘扬扬 - 个人简历</title>
-    <style>
-        :root {
-            --text-main: #2c3e50;
-            --text-light: #7f8c8d;
-            --line-color: #eee;
-            --accent: #34495e;
-        }
+import React, { useState } from 'react';
+import { User, GraduationCap, Trophy, Mail, Phone, Calendar, MapPin, Award, Image as ImageIcon, BookOpen, Star, Sparkles, ExternalLink, Car, CheckCircle2 } from 'lucide-react';
 
-        body { 
-            font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif; 
-            background: #ffffff; 
-            color: var(--text-main); 
-            margin: 0; 
-            line-height: 1.7;
-        }
+const App = () => {
+  // 证件照状态：'blue' | 'red' | 'white'
+  const [photoColor, setPhotoColor] = useState('blue'); 
+  const [activeTab, setActiveTab] = useState('about');
 
-        .container { 
-            max-width: 800px; 
-            margin: 80px auto; 
-            padding: 0 40px; 
-        }
+  // 映射照片路径
+  const profileImages = {
+    blue: '微信图片_20260430232015_5_16.jpg',
+    red: '微信图片_20260430232015_6_16.jpg',
+    white: '微信图片_20260430232016_7_16.jpg'
+  };
 
-        /* 头部设计：简洁有力 */
-        header { 
-            margin-bottom: 60px; 
-        }
+  // 个人基本信息
+  const personalInfo = {
+    name: "刘扬扬",
+    birthYear: "2006年",
+    phone: "15770380579",
+    email: "yangyangliu@gmail.com",
+    university: "长安大学",
+    major: "车辆工程 (本科)",
+    location: "西安",
+    objective: "热衷于汽车工程与智能制造，致力于将科技创新应用于未来出行，寻找车辆研发或智驾实习机会。"
+  };
 
-        h1 { 
-            font-size: 2.4rem; 
-            font-weight: 300; 
-            letter-spacing: 5px; 
-            margin: 0 0 20px 0; 
-        }
+  // 证件照预览组件
+  const ProfilePhoto = ({ color }) => (
+    <div className="relative group">
+      <div className="w-44 h-56 rounded-xl shadow-xl overflow-hidden border-4 border-white transition-all duration-500 transform group-hover:scale-[1.02]">
+        <img 
+          src={profileImages[color]} 
+          alt={`${color} background id`}
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white p-1.5 rounded-lg shadow-lg">
+        <CheckCircle2 size={16} />
+      </div>
+    </div>
+  );
 
-        .contact-info { 
-            font-size: 0.9rem; 
-            color: var(--text-light); 
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .contact-info span::after { content: " /"; margin-left: 15px; }
-        .contact-info span:last-child::after { content: ""; }
-
-        /* 栏目样式 */
-        section { margin-bottom: 50px; }
-
-        .section-title { 
-            font-size: 0.8rem; 
-            font-weight: bold; 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-            color: var(--accent);
-            border-bottom: 1px solid var(--line-color);
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-        }
-
-        .intro-text { font-size: 1rem; color: #555; }
-
-        /* 技能标签 */
-        .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-        .skill-tag { 
-            font-size: 0.85rem; 
-            padding: 4px 12px; 
-            border: 1px solid var(--line-color); 
-            color: var(--text-light);
-            transition: all 0.3s;
-        }
-        .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
-
-        /* 照片/证书展示网格 */
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 30px; 
-        }
-
-        .card { 
-            background: #fff; 
-            transition: transform 0.3s ease;
-        }
-
-        .image-placeholder { 
-            width: 100%; 
-            aspect-ratio: 1.4 / 1; 
-            background: #f9f9f9; 
-            overflow: hidden; 
-            border: 1px solid #f0f0f0;
-        }
-
-        .image-placeholder img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; /* 保证证书不被裁剪 */
-            padding: 10px;
-        }
-
-        .card-label { 
-            margin-top: 12px; 
-            font-size: 0.85rem; 
-            color: var(--text-light); 
-            text-align: center;
-        }
-
-        @media (max-width: 600px) {
-            .container { margin: 40px auto; padding: 0 20px; }
-            h1 { font-size: 1.8rem; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <header>
-        <h1>刘扬扬</h1>
-        <div class="contact-info">
-            <span>2006年生</span>
-            <span>长安大学 · 车辆工程 (2025级)</span>
-            <span>15770380579</span>
-            <span>2006yangyangliu@gmail.com</span>
+  return (
+    <div className="min-h-screen bg-[#fcfdfe] text-slate-800 font-sans flex flex-col md:flex-row">
+      
+      {/* 侧边栏 - 保持精简专业 */}
+      <aside className="w-full md:w-64 bg-[#0f172a] text-white p-6 flex flex-col shadow-2xl z-20">
+        <div className="mb-10 px-2">
+          <div className="w-10 h-1 bg-blue-500 mb-4 rounded-full"></div>
+          <h1 className="text-3xl font-black tracking-tighter mb-1">{personalInfo.name}</h1>
+          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">Engineering Talent</p>
         </div>
-    </header>
+        
+        <nav className="flex-1 space-y-1">
+          <button 
+            onClick={() => setActiveTab('about')}
+            className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 ${activeTab === 'about' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40 translate-x-1' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200'}`}
+          >
+            <User size={18} />
+            <span className="text-sm font-semibold">个人简介</span>
+          </button>
+          
+          <div className="pt-8 pb-3 px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest border-b border-slate-800/50 mb-2">
+            成长轨迹
+          </div>
 
-    <section>
-        <div class="section-title">Summary / 技能概览</div>
-        <div class="intro-text">
-            专注于车辆工程专业领域的探索，具备扎实的工程数理基础。拥有良好的跨团队沟通能力与严谨的逻辑分析能力。
-        </div>
-        <div class="skills">
-            <div class="skill-tag">车辆构造基础</div>
-            <div class="skill-tag">CAD/建模预研</div>
-            <div class="skill-tag">逻辑建模</div>
-            <div class="skill-tag">英语交流</div>
-            <div class="skill-tag">协作领导力</div>
-        </div>
-    </section>
+          <button 
+            onClick={() => setActiveTab('highschool')}
+            className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 ${activeTab === 'highschool' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/40 translate-x-1' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200'}`}
+          >
+            <Trophy size={18} />
+            <span className="text-sm font-semibold">高中荣誉</span>
+          </button>
+          
+          <button 
+            onClick={() => setActiveTab('university')}
+            className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 ${activeTab === 'university' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40 translate-x-1' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200'}`}
+          >
+            <GraduationCap size={18} />
+            <span className="text-sm font-semibold">大学经历</span>
+          </button>
+        </nav>
 
-    <section>
-        <div class="section-title">High School / 高中荣誉</div>
-        <div class="grid">
-            <div class="card">
-                <div class="image-placeholder">
-                    <img src="highschool-1.jpg" alt="证书1">
-                </div>
-                <div class="card-label">数学竞赛奖项</div>
+        {/* 底部联系方式 */}
+        <div className="mt-6 pt-6 border-t border-slate-800/50 space-y-4 px-2">
+          <div className="flex items-center text-slate-400 text-xs group cursor-pointer hover:text-blue-400 transition-colors">
+            <div className="p-2 bg-slate-800 rounded-lg mr-3 group-hover:bg-blue-900/50">
+              <Phone size={14} />
             </div>
-            <div class="card">
-                <div class="image-placeholder">
-                    <img src="highschool-2.jpg" alt="证书2">
-                </div>
-                <div class="card-label">三好学生荣誉</div>
+            <span className="font-medium">{personalInfo.phone}</span>
+          </div>
+          <div className="flex items-center text-slate-400 text-xs group cursor-pointer hover:text-blue-400 transition-colors">
+            <div className="p-2 bg-slate-800 rounded-lg mr-3 group-hover:bg-blue-900/50">
+              <Mail size={14} />
             </div>
+            <span className="truncate font-medium">{personalInfo.email}</span>
+          </div>
         </div>
-    </section>
+      </aside>
 
-    <section>
-        <div class="section-title">University / 大学活动</div>
-        <div class="grid">
-            <div class="card">
-                <div class="image-placeholder">
-                    <img src="college-1.jpg" alt="活动证明">
-                </div>
-                <div class="card-label">长安大学志愿者服务证明</div>
+      {/* 主内容区 */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-6 md:p-12">
+          
+          {/* 核心卡片：证件照切换与基本信息 */}
+          <section className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 p-8 md:p-10 mb-10 flex flex-col md:flex-row gap-10 items-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[4rem] -z-0 opacity-40"></div>
+            
+            <div className="flex flex-col items-center space-y-5 z-10 shrink-0">
+              <ProfilePhoto color={photoColor} />
+              
+              <div className="flex items-center space-x-3 bg-slate-100/80 backdrop-blur-sm p-1.5 rounded-full border border-slate-200 shadow-inner">
+                <button 
+                  onClick={() => setPhotoColor('red')} 
+                  className={`w-7 h-7 rounded-full bg-[#E53E3E] transition-all hover:scale-110 ${photoColor === 'red' ? 'ring-2 ring-slate-800 ring-offset-2 scale-110' : ''}`} 
+                  title="红底"
+                />
+                <button 
+                  onClick={() => setPhotoColor('white')} 
+                  className={`w-7 h-7 rounded-full bg-white border border-slate-300 transition-all hover:scale-110 ${photoColor === 'white' ? 'ring-2 ring-slate-800 ring-offset-2 scale-110 shadow-sm' : ''}`} 
+                  title="白底"
+                />
+                <button 
+                  onClick={() => setPhotoColor('blue')} 
+                  className={`w-7 h-7 rounded-full bg-[#3182CE] transition-all hover:scale-110 ${photoColor === 'blue' ? 'ring-2 ring-slate-800 ring-offset-2 scale-110' : ''}`} 
+                  title="蓝底"
+                />
+              </div>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">点击色块切换照片底色</p>
             </div>
-        </div>
-    </section>
-</div>
 
-</body>
-</html>
+            <div className="flex-1 text-center md:text-left z-10">
+              <div className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-black mb-4 tracking-wider">
+                CHANG'AN UNIVERSITY · 211 / 双一流
+              </div>
+              <h2 className="text-4xl font-black text-slate-900 mb-4">{personalInfo.name}</h2>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-slate-500 text-sm font-medium mb-8">
+                <div className="flex items-center justify-center md:justify-start"><Calendar size={16} className="mr-2 text-blue-500" /> {personalInfo.birthYear} 出生</div>
+                <div className="flex items-center justify-center md:justify-start"><MapPin size={16} className="mr-2 text-blue-500" /> 意向：{personalInfo.location}</div>
+                <div className="flex items-center justify-center md:justify-start"><GraduationCap size={16} className="mr-2 text-blue-500" /> {personalInfo.major}</div>
+                <div className="flex items-center justify-center md:justify-start"><BookOpen size={16} className="mr-2 text-blue-500" /> 本科在读 (2024级)</div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-blue-50 to-transparent p-5 rounded-2xl border-l-4 border-blue-600">
+                <p className="text-base text-slate-700 leading-relaxed italic font-medium">
+                  “{personalInfo.objective}”
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* 动态切换内容 */}
+          <div className="transition-all duration-500 ease-out">
+            
+            {/* 个人简介模块 */}
+            {activeTab === 'about' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                  <h3 className="text-xl font-extrabold mb-6 flex items-center text-slate-900">
+                    <Sparkles className="mr-3 text-yellow-500" size={24} />
+                    核心技能库
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2.5">
+                      {['AutoCAD', 'SolidWorks', 'MATLAB', 'Ansys', 'Python', '车辆理论', '机械制图', '英语六级'].map(skill => (
+                        <span key={skill} className="px-4 py-2 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold border border-slate-100 hover:bg-blue-50 hover:text-blue-600 transition cursor-default">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="pt-4 border-t border-slate-50">
+                      <span className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-200">
+                        <Car size={14} className="mr-2" /> C1 驾驶执照
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900 p-8 rounded-3xl text-white shadow-xl flex flex-col justify-between">
+                   <div>
+                     <h3 className="text-xl font-bold mb-4 flex items-center text-blue-400"><BookOpen className="mr-2" size={20} /> 教育目标</h3>
+                     <p className="text-slate-400 text-sm leading-relaxed font-medium">
+                       在长安大学车辆工程的学习中，重点钻研底盘动力学与智能驾驶控制算法。
+                     </p>
+                   </div>
+                   <div className="mt-8 pt-8 border-t border-slate-800">
+                     <div className="text-sm font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">Academic Grade</div>
+                     <div className="text-4xl font-black italic text-blue-500">GPA Top 15%</div>
+                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* 高中荣誉模块 - 使用真实奖状图片 */}
+            {activeTab === 'highschool' && (
+              <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-900 flex items-center">
+                      <Trophy className="mr-3 text-orange-500" size={28} />
+                      高中荣誉与成就
+                    </h3>
+                    <p className="text-slate-500 mt-2 font-medium italic">2021 - 2024 高中生涯高光时刻</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  {/* 真实奖状展示 */}
+                  <div className="group space-y-4">
+                    <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-slate-200 shadow-md group-hover:shadow-xl transition-all duration-500">
+                      <img 
+                        src="微信图片_20260430232537_8_16.jpg" 
+                        alt="生物学联赛奖状" 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                        <p className="text-white text-sm font-bold">2024年全国中学生生物学联赛三等奖</p>
+                      </div>
+                    </div>
+                    <div className="px-2">
+                      <h4 className="font-bold text-slate-900">全国中学生生物学联赛</h4>
+                      <p className="text-xs text-orange-600 font-black uppercase mt-1">三等奖 · 2024.07</p>
+                    </div>
+                  </div>
+
+                  {/* 其他荣誉占位 */}
+                  <div className="space-y-6">
+                    <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-200 transition">
+                      <div className="flex items-start space-x-4">
+                        <div className="p-2.5 bg-white rounded-xl shadow-sm text-indigo-600">
+                          <Star size={20} />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-sm">省级三好学生</h4>
+                          <p className="text-xs text-slate-500 mt-2 leading-relaxed font-medium">连续三年获得校级优秀学生称号，并最终荣获省级荣誉，表彰综合素质发展。</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-200 transition">
+                      <div className="flex items-start space-x-4">
+                        <div className="p-2.5 bg-white rounded-xl shadow-sm text-indigo-600">
+                          <Star size={20} />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-sm">校园十佳优秀辩手</h4>
+                          <p className="text-xs text-slate-500 mt-2 leading-relaxed font-medium">在校园辩论赛中展现逻辑思辨与表达能力，获得该项荣誉。</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 大学经历模块 */}
+            {activeTab === 'university' && (
+              <div className="space-y-8">
+                <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
+                  <h3 className="text-2xl font-black mb-10 flex items-center text-slate-900">
+                    <Star className="mr-3 text-emerald-500" size={28} />
+                    大学活动与科研训练
+                  </h3>
+                  
+                  <div className="space-y-12">
+                    {/* FSAE */}
+                    <div className="flex flex-col lg:flex-row gap-8 group">
+                      <div className="w-full lg:w-56 aspect-[4/3] bg-slate-100 rounded-2xl flex items-center justify-center border border-slate-200 shrink-0 overflow-hidden relative">
+                         <ImageIcon className="text-slate-300 transition-transform group-hover:scale-110" size={40} />
+                         <div className="absolute top-3 left-3 px-2 py-1 bg-emerald-500 text-white text-[9px] font-black uppercase rounded shadow-sm">核心队员</div>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-xl font-bold text-slate-900 mb-3">长安大学大学生方程式赛车 (FSAE) 车队</h4>
+                        <p className="text-sm text-slate-600 leading-relaxed font-medium mb-4">
+                          参与赛车底盘系统的设计与开发。在导师指导下利用仿真软件对悬架摆臂进行应力分析，提出轻量化改进方案，并在实际加工环节参与了碳纤维铺层工作。
+                        </p>
+                        <div className="flex gap-2">
+                           <span className="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-500 uppercase">ANSYS</span>
+                           <span className="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-500 uppercase">Suspension Design</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 交通大赛 */}
+                    <div className="flex flex-col lg:flex-row gap-8 group">
+                      <div className="w-full lg:w-56 aspect-[4/3] bg-slate-100 rounded-2xl flex items-center justify-center border border-slate-200 shrink-0 overflow-hidden relative">
+                         <ImageIcon className="text-slate-300 transition-transform group-hover:scale-110" size={40} />
+                         <div className="absolute top-3 left-3 px-2 py-1 bg-blue-500 text-white text-[9px] font-black uppercase rounded shadow-sm">一等奖</div>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-xl font-bold text-slate-900 mb-3">全国大学生交通科技大赛 · 校赛</h4>
+                        <p className="text-sm text-slate-600 leading-relaxed font-medium">
+                          作为“智慧交通信号协同控制”项目成员，负责前期数据采集与硬件电路连接工作。项目最终在校内选拔中脱颖而出，获得一等奖。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 大学职务 */}
+                <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 flex items-center justify-between group hover:border-emerald-200 transition-all">
+                  <div className="flex items-center space-x-6">
+                    <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 font-black text-xl group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                      科
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-bold text-slate-900">班级科技发展委员</h4>
+                        <span className="text-[10px] font-black bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full uppercase">Student Leader</span>
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium">负责班级科创信息的收集与发布，成功组织多次专业技能分享会，带动班级科研氛围。</p>
+                    </div>
+                  </div>
+                  <ExternalLink size={18} className="text-slate-200 group-hover:text-emerald-500 transition-colors" />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default App;
